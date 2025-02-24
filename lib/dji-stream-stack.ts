@@ -1,4 +1,4 @@
-import * as cdk from "aws-cdk-lib";
+import { Duration, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import {
   AwsLogDriver,
   Cluster,
@@ -23,8 +23,8 @@ import {
 import { Construct } from "constructs";
 import { LoadBalancerTarget } from "aws-cdk-lib/aws-route53-targets";
 
-export class SfDJIStreamStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+export class SfDJIStreamStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     // Certificates and Hosted Zone
@@ -64,7 +64,7 @@ export class SfDJIStreamStack extends cdk.Stack {
       streamPrefix: "sfDJIStream",
       logGroup: new LogGroup(this, "SfDJIStreamLogGroup", {
         retention: RetentionDays.ONE_WEEK,
-        removalPolicy: cdk.RemovalPolicy.DESTROY,
+        removalPolicy: RemovalPolicy.DESTROY,
       }),
     });
 
@@ -89,9 +89,10 @@ export class SfDJIStreamStack extends cdk.Stack {
       logging: logging,
       healthCheck: {
         command: ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"],
-        interval: cdk.Duration.seconds(30),
-        timeout: cdk.Duration.seconds(5),
-        retries: 3,
+        interval: Duration.seconds(30), // Check every 30 seconds
+        timeout: Duration.seconds(10), // Allow 10 seconds for the check
+        startPeriod: Duration.seconds(60), // Give 60 seconds for initial startup
+        retries: 3, // Allow 3 retries
       },
       // This is the port mapping from the container to the host
       portMappings: [
@@ -157,6 +158,17 @@ export class SfDJIStreamStack extends cdk.Stack {
           }),
         ],
       });
+
+      if (port === 80) {
+        targetGroup.configureHealthCheck({
+          path: "/",
+          port: port.toString(),
+          protocol: ELBProtocol.HTTP,
+          healthyHttpCodes: "200-399",
+          interval: Duration.seconds(60),
+          timeout: Duration.seconds(10),
+        });
+      }
 
       lb.addListener(`Listener${port}`, {
         port,

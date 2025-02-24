@@ -30,11 +30,11 @@ test-ci:
 
 # Build the Docker image
 build:
-	docker build -t $(IMAGE_NAME):$(IMAGE_VERSION) -f Docker/Dockerfile .
+	docker build -t $(IMAGE_NAME):$(IMAGE_VERSION) .
 
 # Run the built image locally
 start-local:
-	docker run --env-file .env --name stream-server -p 80:80 -p 1935:1935 $(IMAGE_NAME):$(IMAGE_VERSION)
+	docker run --rm -it --name stream-server -p 80:80 -p 1935:1935 $(IMAGE_NAME):$(IMAGE_VERSION)
 
 # Remove the local container
 stop-local:
