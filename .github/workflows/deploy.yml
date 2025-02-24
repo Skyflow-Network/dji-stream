@@ -91,6 +91,3 @@ jobs:
       - name: Deploy Infrastructure
         if: ${{ !inputs.skip_infra }}
         run: make deploy-infra
-
-      - name: Force new deployment of the ECS service
-        run: make force-deploy
