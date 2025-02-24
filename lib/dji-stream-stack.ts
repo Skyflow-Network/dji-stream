@@ -9,6 +9,7 @@ import {
   Protocol,
   FargateService,
 } from "aws-cdk-lib/aws-ecs";
+import { Repository } from "aws-cdk-lib/aws-ecr";
 import { LogGroup, RetentionDays } from "aws-cdk-lib/aws-logs";
 import { Peer, Port, SecurityGroup, Vpc } from "aws-cdk-lib/aws-ec2";
 import { StringParameter } from "aws-cdk-lib/aws-ssm";
@@ -51,6 +52,13 @@ export class SfDJIStreamStack extends cdk.Stack {
       containerInsights: true,
     });
 
+    // ECR Repository
+    const repository = Repository.fromRepositoryName(
+      this,
+      "SfDJIStreamRepository",
+      "skyflow-dji-stream-server"
+    );
+
     // Cloudwatch Logs
     const logging = new AwsLogDriver({
       streamPrefix: "sfDJIStream",
@@ -77,7 +85,7 @@ export class SfDJIStreamStack extends cdk.Stack {
     // Add container to task definition
     taskDefinition.addContainer("SfDJIStreamContainer", {
       containerName: "SfDJIStreamContainer",
-      image: ContainerImage.fromRegistry("ghcr.io/thequib/dji-stream:latest"),
+      image: ContainerImage.fromEcrRepository(repository, "latest"),
       logging: logging,
       healthCheck: {
         command: ["CMD-SHELL", "curl -f http://localhost:80/ || exit 1"],
