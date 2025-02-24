@@ -1,0 +1,51 @@
+{
+  "hosted-zone:account=891376915868:domainName=flyskyflow.com:region=eu-central-1": {
+    "Id": "/hostedzone/Z02479303NVJOYA5S9HAU",
+    "Name": "flyskyflow.com."
+  },
+  "ssm:account=891376915868:parameterName=/skyflow-db/vpc-id:region=eu-central-1": "vpc-01e1d5ef0816ab679",
+  "vpc-provider:account=891376915868:filter.vpc-id=vpc-01e1d5ef0816ab679:region=eu-central-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-01e1d5ef0816ab679",
+    "vpcCidrBlock": "10.0.0.0/16",
+    "ownerAccountId": "891376915868",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0096639af59a5d264",
+            "cidr": "10.0.0.0/24",
+            "availabilityZone": "eu-central-1a",
+            "routeTableId": "rtb-002dd394a618afae0"
+          },
+          {
+            "subnetId": "subnet-068f1470d13c3c600",
+            "cidr": "10.0.1.0/24",
+            "availabilityZone": "eu-central-1b",
+            "routeTableId": "rtb-0f422620bb7c9c9dd"
+          }
+        ]
+      },
+      {
+        "name": "Private",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-0caf69c5a1c1fc803",
+            "cidr": "10.0.2.0/24",
+            "availabilityZone": "eu-central-1a",
+            "routeTableId": "rtb-09c4e76cdc800c933"
+          },
+          {
+            "subnetId": "subnet-027ecc8e6ed787e2c",
+            "cidr": "10.0.3.0/24",
+            "availabilityZone": "eu-central-1b",
+            "routeTableId": "rtb-0af44db60c1ec0f6c"
+          }
+        ]
+      }
+    ]
+  }
+}

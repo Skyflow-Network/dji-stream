@@ -1,0 +1,28 @@
+name: Main
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_infra:
+        description: "Skip infrastructure deployment"
+        type: boolean
+        default: false
+        required: false
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  main:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      env: production
+      AWS_REGION: eu-central-1
+      deployment-role: arn:aws:iam::891376915868:role/github-deployment-role
+      skip_infra: ${{ github.event.inputs.skip_infra || false }}
+    secrets: inherit
+    # See https://docs.github.com/en/actions/using-workflows/reusing-workflows#passing-inputs-and-secrets-to-a-reusable-workflow
